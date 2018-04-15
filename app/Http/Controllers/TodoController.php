@@ -40,20 +40,22 @@ class TodoController extends Controller
      */
     public function store(StoreTodo $request)
     {
+        DB::beginTransaction();
         try {
-            //DB::transaction(function () use ($request) {
-                $todo = new Todo;
-                $todo->text = $request->text;
-                $todo->done = $request->done;
-                $todo->save();
-                return response()->json(['result' => $todo]);
-            //});
+            $todo = new Todo;
+            $todo->text = $request->text;
+            $todo->done = $request->done;
+            $todo->save();
+            DB::commit();
+            return response()->json(['result' => $todo]);
 
         } catch (QueryException $ex) {
             // Errores de SQL
+            DB::rollBack();
             return response()->json(['result' => $ex->getMessage()], 500);
         } catch (Exception $ex) {
             // Otros errores
+            DB::rollBack();
             return response()->json(['result' => $ex->getMessage()], 500);
         }
         //return response()->json(['result' => 'error'], 500);
@@ -70,19 +72,23 @@ class TodoController extends Controller
      */
     public function update($id, StoreTodo $request)
     {
+        DB::beginTransaction();
+
         try {
-            //DB::transaction(function () use ($request,$id) {
-                $todo = Todo::find($id);
-                $todo->text = $request->text;
-                $todo->done = $request->done;
-                $todo->save();
-                return response()->json(['result' => $todo]);
-           // });
+            $todo = Todo::find($id);
+            $todo->text = $request->text;
+            $todo->done = $request->done;
+            $todo->save();
+            DB::commit();
+
+            return response()->json(['result' => $todo]);
         } catch (QueryException $ex) {
             // Errores de SQL
+            DB::rollBack();
             return response()->json(['result' => $ex->getMessage()], 500);
         } catch (Exception $ex) {
             // Otros errores
+            DB::rollBack();
             return response()->json(['result' => $ex->getMessage()], 500);
         }
 
