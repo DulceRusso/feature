@@ -34,63 +34,35 @@
      * - En addTodo, removeTodo y toggleTodo deben hacer los cambios pertinentes para que las modificaciones,
      *   addiciones o elimicaiones tomen efecto en el backend asi como la base de datos.
      */
-    import axios from 'axios';
-
     export default {
         data() {
             return {
                 todoItemText: '',
                 items: [],
-                updatedTodo: {}
             }
         },
         mounted() {
-            this.todoList();
+            this.items = [
+                {text: 'Primer recordatorio', done: true},
+                {text: 'Segundo recordatorio', done: false},
+                {text: 'Tercero recordatorio', done: false},
+                {text: 'Cuarto recordatorio', done: true},
+                {text: 'Quinto recordatorio', done: false},
+            ]
         },
         methods: {
-            todoList() {
-                axios.get('/todos').then(response => {
-                    this.items = response.data.result;
-                }).catch((error) => {
-
-                });
-            },
             addTodo() {
                 let text = this.todoItemText.trim();
                 if (text !== '') {
-                    let todo = {text: text, done: false};
-                    axios.post('/todos', todo).then(response => {
-                        this.items.push(response.data.result);
-                    }).catch((error) => {
-
-                    });
+                    this.items.push({text: text, done: false});
                     this.todoItemText = '';
                 }
             },
             removeTodo(todo) {
-                axios.delete('/todos/'+ todo.id).then(response => {
-                    this.items = this.items.filter(item => item !== todo);
-                }).catch((error) => {
-
-                });
-            },
-            updateTodo(todo){
-                axios.patch('/todos/'+ todo.id, todo).then(response => {
-                    return response.data.result;
-                }).catch((error) => {
-                    return 'error';
-                });
+                this.items = this.items.filter(item => item !== todo);
             },
             toggleDone(todo) {
-                let newTodo = {
-                    id : todo.id,
-                    text : todo.text,
-                    done: (!todo.done)
-                };
-
-                if(this.updateTodo(newTodo) !== 'error'){
-                    todo.done = !todo.done;
-                }
+                todo.done = !todo.done
             }
         }
     }

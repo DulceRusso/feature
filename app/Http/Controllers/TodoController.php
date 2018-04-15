@@ -26,8 +26,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $list = Todo::select('id','text','done')->orderBy('created_at','asc')->get();
-        return response()->json(['data' => $list]);
+        $list = Todo::select('id', 'text', 'done')->orderBy('created_at', 'asc')->get();
+        return response()->json(['result' => $list]);
     }
 
     /**
@@ -41,18 +41,14 @@ class TodoController extends Controller
     public function store(StoreTodo $request)
     {
         try {
-            $todo = 'error';
-            DB::transaction(function () use ($request) {
+            //DB::transaction(function () use ($request) {
                 $todo = new Todo;
                 $todo->text = $request->text;
                 $todo->done = $request->done;
                 $todo->save();
-            });
-            if(empty($todo->text)){
-                return response()->json(['result' => 'error'], 500);
-            } else{
                 return response()->json(['result' => $todo]);
-            }
+            //});
+
         } catch (QueryException $ex) {
             // Errores de SQL
             return response()->json(['result' => $ex->getMessage()], 500);
@@ -60,6 +56,7 @@ class TodoController extends Controller
             // Otros errores
             return response()->json(['result' => $ex->getMessage()], 500);
         }
+        //return response()->json(['result' => 'error'], 500);
 
     }
 
@@ -74,18 +71,13 @@ class TodoController extends Controller
     public function update($id, StoreTodo $request)
     {
         try {
-            $todo = 'error';
-            DB::transaction(function () use ($request, $id) {
+            //DB::transaction(function () use ($request,$id) {
                 $todo = Todo::find($id);
                 $todo->text = $request->text;
                 $todo->done = $request->done;
                 $todo->save();
-            });
-            if($todo->text =! $request->text){
-                return response()->json(['result' => 'error'], 500);
-            } else{
                 return response()->json(['result' => $todo]);
-            }
+           // });
         } catch (QueryException $ex) {
             // Errores de SQL
             return response()->json(['result' => $ex->getMessage()], 500);
@@ -103,7 +95,7 @@ class TodoController extends Controller
      * @param integer $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete($id)
+    public function destroy($id)
     {
         try {
             $todo = Todo::find($id);

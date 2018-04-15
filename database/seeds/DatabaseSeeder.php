@@ -1,9 +1,7 @@
 <?php
 
-use App\User;
-use Illuminate\Database\Eloquent\Model;
+use App\Todo;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,13 +12,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Model::unguard();
-
-        DB::table('users')->delete();
-
-        $user = ['name' => 'test', 'email' => 'test@test.com', 'password' => Hash::make('qwerty')];
-        User::create($user);
-
-        Model::reguard();
+        factory(Todo::class,15)->create();
     }
 }
