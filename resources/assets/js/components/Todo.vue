@@ -52,15 +52,14 @@
         },
         methods: {
             addTodo() {
-                let text = this.todoItemText.trim()
+                let text = this.todoItemText.trim();
                 if (text !== '') {
-                    this.items.push({text: text, done: false})
-                    this.todoItemText = ''
+                    this.items.push({text: text, done: false});
+                    this.todoItemText = '';
                 }
             },
             removeTodo(todo) {
-                this.items = this.items.filter(item = > item !== todo
-            )
+                this.items = this.items.filter(item => item !== todo);
             },
             toggleDone(todo) {
                 todo.done = !todo.done
