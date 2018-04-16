@@ -1,10 +1,12 @@
 <template>
-    <div class="container">
+    <div>
         <todo-input
                 :todoItemText.sync="todoItemText"
                 v-on:addTodo="addTodo"
         >
         </todo-input>
+        <section class="section">
+        <div class="container">
         <table class="table is-bordered">
             <todo-item
                     v-for="(todo, index) in todoList"
@@ -17,6 +19,8 @@
             >
             </todo-item>
         </table>
+        </div>
+        </section>
     </div>
 </template>
 
