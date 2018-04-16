@@ -7,7 +7,7 @@
         </todo-input>
         <table class="table is-bordered">
             <todo-item
-                    v-for="(todo, index) in items"
+                    v-for="(todo, index) in todoArray"
                     :key="index"
                     :id="todo.id"
                     :text="todo.text"
@@ -31,6 +31,11 @@
     import axios from 'axios';
 
     export default {
+        computed:{
+            todoArray(){
+                return this.$store.state.todos;
+            }
+        },
         data() {
             return {
                 todoItemText: '',
@@ -39,7 +44,8 @@
             }
         },
         mounted() {
-            this.todoList();
+            //this.todoList();
+            this.$store.dispatch('loadTodos');
         },
         methods: {
             todoList() {

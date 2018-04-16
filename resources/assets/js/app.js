@@ -9,6 +9,8 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import {store} from './store/store';
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -19,5 +21,6 @@ Vue.component('todo-input', require('./components/TodoInput.vue'));
 Vue.component('todo-item', require('./components/TodoItem.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    store: store
 });
