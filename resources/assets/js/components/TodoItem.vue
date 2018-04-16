@@ -1,13 +1,19 @@
 <template>
     <tr>
-        <td class="is-fullwidth" style="cursor: pointer" :class="{ 'is-done': done }"
-            @click="$emit('toggleDone')">
+        <td class="is-narrow remove-border">
+            <label class="radio">
+                <input type="radio" :checked="done" @click="$emit('toggleDone')">
+            </label>
+        </td>
+        <td class="is-fullwidth remove-border" style="cursor: pointer" :class="{ 'is-done': done }"
+            >
             {{ text }}
         </td>
-        <td class="is-narrow">
-            <a class="button is-danger is-small" @click="removeTodo(id)">Eliminar</a>
+        <td class="is-narrow is-danger remove-border">
+            <a @click="removeTodo(id)">Eliminar</a>
         </td>
     </tr>
+
 </template>
 
 <script>
@@ -32,5 +38,11 @@
 </script>
 
 <style scoped>
+    .is-done {
+        text-decoration: line-through;
+    }
 
+    .remove-border{
+        border: 0 !important;
+    }
 </style>
