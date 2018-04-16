@@ -7,7 +7,7 @@
         </todo-input>
         <table class="table is-bordered">
             <todo-item
-                    v-for="(todo, index) in todoArray"
+                    v-for="(todo, index) in todoList"
                     :key="index"
                     :id="todo.id"
                     :text="todo.text"
@@ -28,12 +28,14 @@
      * - En addTodo, removeTodo y toggleTodo deben hacer los cambios pertinentes para que las modificaciones,
      *   addiciones o elimicaiones tomen efecto en el backend asi como la base de datos.
      */
-    import axios from 'axios';
 
     export default {
         computed:{
-            todoArray(){
-                return this.$store.state.todos;
+            todoList(){
+                return this.$store.getters.todos;
+            },
+            updated(){
+                return this.$store.getters.updated;
             }
         },
         data() {
@@ -44,42 +46,22 @@
             }
         },
         mounted() {
-            //this.todoList();
             this.$store.dispatch('loadTodos');
         },
         methods: {
-            todoList() {
-                axios.get('/todos').then(response => {
-                    this.items = response.data.result;
-                }).catch((error) => {
-
-                });
-            },
             addTodo() {
                 let text = this.todoItemText.trim();
-                if (text !== '') {
-                    let todo = {text: text, done: false};
-                    axios.post('/todos', todo).then(response => {
-                        this.items.push(response.data.result);
-                    }).catch((error) => {
-
-                    });
-                    this.todoItemText = '';
-                }
+                this.$store.commit('SET_NEW_TODO', text);
+                this.$store.dispatch('addTodo');
             },
             removeTodo(id) {
-                axios.delete('/todos/'+ id).then(response => {
-                    this.items = this.items.filter(item => item.id !== id);
-                }).catch((error) => {
-
-                });
+                this.$store.commit('SET_TODO_ID',id);
+                this.$store.dispatch('removeTodo');
             },
             updateTodo(todo){
-                axios.patch('/todos/'+ todo.id, todo).then(response => {
-                    return response.data.result;
-                }).catch((error) => {
-                    return 'error';
-                });
+                this.$store.commit('SET_NEW_TODO', todo);
+                this.$store.commit('SET_TODO_ID', todo.id);
+                this.$store.dispatch('updateTodo');
             },
             toggleDone(todo) {
                 let newTodo = {
@@ -88,8 +70,11 @@
                     done: (!todo.done)
                 };
 
-                if(this.updateTodo(newTodo) !== 'error'){
+                this.updateTodo(newTodo);
+
+                if(this.updated){
                     todo.done = !todo.done;
+                    this.$store.commit('SET_UPDATED', false);
                 }
             }
         }
